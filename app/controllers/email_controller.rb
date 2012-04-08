@@ -1,10 +1,12 @@
 require 'gmail'
 
 class EmailController < AuthenticationController
+
+  GROUPING_THRESHOLD_DEFAULT = 5
   
   def index
     @senders_to_email_counts = senders_to_email_counts
-    @senders_to_email_counts = group_by_threshold(@senders_to_email_counts)
+    @senders_to_email_counts = group_by_threshold(@senders_to_email_counts, params[:grouping_threshold] || GROUPING_THRESHOLD_DEFAULT)
     @senders_to_email_counts = sort(@senders_to_email_counts)
     @total_count = total_count
     respond_to do |format|
@@ -24,11 +26,11 @@ class EmailController < AuthenticationController
     from
   end
 
-  def group_by_threshold(senders_to_email_counts, threshold = 5)
+  def group_by_threshold(senders_to_email_counts, threshold)
     others_count = 0
     cloned_senders_to_email_counts = senders_to_email_counts.clone
     senders_to_email_counts.each do |sender, email_count|
-      unless email_count.to_i > threshold
+      unless email_count.to_i > threshold.to_i
         cloned_senders_to_email_counts.delete(sender)
         others_count += email_count
       end
