@@ -1,10 +1,11 @@
 require 'gmail'
 
 class EmailController < AuthenticationController
-
+  
   def index
-    @senders_to_email_counts = senders_to_email_counts()
-    @senders_to_email_counts = sort(senders_to_email_counts)
+    @senders_to_email_counts = senders_to_email_counts
+    @senders_to_email_counts = group_by_threshold(@senders_to_email_counts)
+    @senders_to_email_counts = sort(@senders_to_email_counts)
     @total_count = total_count
     respond_to do |format|
       format.html
@@ -21,6 +22,19 @@ class EmailController < AuthenticationController
     end
     from += "<#{sender.mailbox.downcase}@#{sender.host.downcase}>"
     from
+  end
+
+  def group_by_threshold(senders_to_email_counts, threshold = 5)
+    others_count = 0
+    cloned_senders_to_email_counts = senders_to_email_counts.clone
+    senders_to_email_counts.each do |sender, email_count|
+      unless email_count.to_i > threshold
+        cloned_senders_to_email_counts.delete(sender)
+        others_count += email_count
+      end
+      cloned_senders_to_email_counts["Others"] = others_count
+    end
+    cloned_senders_to_email_counts
   end
 
   def senders_to_email_counts

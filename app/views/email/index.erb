@@ -1,16 +1,18 @@
-<% index = 0 %>
+<% index = 1 %>
 <% count = 0 %>
 <table>
-<% @senders_to_email_counts.each do |sender_to_email| %>
+<% @senders_to_email_counts.each do |sender, email_count| %>
     <tr>
       <td><%= index %></td>
-      <td><%= sender_to_email[0] %></td>
-      <td><%= sender_to_email[1] %></td>
+      <td><%= sender %></td>
+      <td><%= email_count %></td>
     </tr>
     <% index += 1 %>
-    <% count += sender_to_email[1] %>
+    <% count += email_count %>
 <% end %>
-    <tr><td>&nbsp;</td></tr>
+    <tr>
+      <td>&nbsp;</td>
+    </tr>
     <tr>
       <td>
         Total count: <%= @total_count %>
