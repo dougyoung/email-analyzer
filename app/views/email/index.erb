@@ -1,1 +1,24 @@
-<%= "here" %>
+<% index = 0 %>
+<% count = 0 %>
+<table>
+<% @senders_to_email_counts.each do |sender_to_email| %>
+    <tr>
+      <td><%= index %></td>
+      <td><%= sender_to_email[0] %></td>
+      <td><%= sender_to_email[1] %></td>
+    </tr>
+    <% index += 1 %>
+    <% count += sender_to_email[1] %>
+<% end %>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+      <td>
+        Total count: <%= @total_count %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Total count by calculation: <%= count %>
+      </td>
+    </tr>
+</table>
